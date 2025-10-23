@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XCC-190 Formular</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #444;
+            font-weight: 500;
+        }
+        
+        select, input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .checkbox-item input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+        }
+        
+        .equipment-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .equipment-item h4 {
+            margin-bottom: 10px;
+            color: #555;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f0f7ff;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+        }
+        
+        .result h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .result-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .copy-btn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .copy-btn:hover {
+            background: #218838;
+        }
+        
+        .success-msg {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background: #d4edda;
+            color: #155724;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="passwordScreen">
+            <div class="header">
+                <h1>🔒 Acces Restricționat</h1>
+                <p>XCC-190 Formular Colectare Date</p>
+            </div>
+            <div class="section">
+                <div class="form-group">
+                    <label for="passwordInput">Introdu Parola:</label>
+                    <input type="password" id="passwordInput" placeholder="Parola...">
+                    <button type="button" class="submit-btn" style="margin-top: 15px;" onclick="checkPassword()">🔓 Intră</button>
+                    <div id="passwordError" style="display: none; margin-top: 10px; padding: 10px; background: #f8d7da; color: #721c24; border-radius: 5px; text-align: center;">
+                        ❌ Parolă incorectă!
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="mainContent" style="display: none;">
+            <div class="header">
+                <h1>🏔️ XCC-190 Formular Colectare Date</h1>
+                <p>XCC Maramureș Noiembrie 2025 | 6-9 Noiembrie</p>
+            </div>
+            
+            <form id="xccForm">
+            <!-- PERSONAL INFO -->
+            <div class="section">
+                <h2 class="section-title">👤 Date Personale</h2>
+                
+                <div class="form-group">
+                    <label for="name">Selectează numele tău *</label>
+                    <select id="name" required>
+                        <option value="">-- Alege numele --</option>
+                        <option value="Pavel Matu">Pavel Matu</option>
+                        <option value="Fabian Faur">Fabian Faur</option>
+                        <option value="Ioan Vuc">Ioan Vuc</option>
+                        <option value="Dorin Cioara">Dorin Cioara</option>
+                        <option value="Lucian Bala">Lucian Bala</option>
+                        <option value="Iosif Marcu">Iosif Marcu</option>
+                        <option value="Cosmin-Daniel Dragoi">Cosmin-Daniel Dragoi</option>
+                        <option value="Evald Muresan">Evald Muresan</option>
+                        <option value="Gabriel Enache">Gabriel Enache</option>
+                        <option value="Aurel Enache">Aurel Enache</option>
+                        <option value="Theo-Rafael Gazda">Theo-Rafael Gazda</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- EQUIPMENT -->
+            <div class="section">
+                <h2 class="section-title">📦 Echipament</h2>
+                
+                <div class="equipment-item">
+                    <h4>1. Sac de dormit (pentru temperaturi sub 0°C)</h4>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="radio" id="sleepingbag-yes" name="sleepingbag" value="AM" required>
+                            <label for="sleepingbag-yes">✅ AM</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" id="sleepingbag-no" name="sleepingbag" value="LIPSĂ">
+                            <label for="sleepingbag-no">❌ LIPSĂ</label>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <label for="sleepingbagNotes">Notițe (opțional)</label>
+                        <input type="text" id="sleepingbagNotes" placeholder="Ex: temperatura minimă, stare, etc.">
+                    </div>
+                </div>
+                
+                <div class="equipment-item">
+                    <h4>2. Cort</h4>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="radio" id="tent-yes" name="tent" value="AM" required>
+                            <label for="tent-yes">✅ AM</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" id="tent-no" name="tent" value="LIPSĂ">
+                            <label for="tent-no">❌ LIPSĂ</label>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <label for="tentCapacity">Dacă ai, pentru câte persoane?</label>
+                        <input type="number" id="tentCapacity" min="1" max="10" placeholder="Ex: 2">
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <label for="tentNotes">Notițe (opțional)</label>
+                        <input type="text" id="tentNotes" placeholder="Ex: tip, stare, etc.">
+                    </div>
+                </div>
+                
+                <div class="equipment-item">
+                    <h4>3. Izopren / Saltea</h4>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="radio" id="mat-yes" name="mat" value="AM" required>
+                            <label for="mat-yes">✅ AM</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" id="mat-no" name="mat" value="LIPSĂ">
+                            <label for="mat-no">❌ LIPSĂ</label>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <label for="matNotes">Notițe (opțional)</label>
+                        <input type="text" id="matNotes" placeholder="Ex: tip, mărime, etc.">
+                    </div>
+                </div>
+                
+                <div class="equipment-item">
+                    <h4>4. Rucsac mare (50L+)</h4>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="radio" id="backpack-yes" name="backpack" value="AM" required>
+                            <label for="backpack-yes">✅ AM</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" id="backpack-no" name="backpack" value="LIPSĂ">
+                            <label for="backpack-no">❌ LIPSĂ</label>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <label for="backpackNotes">Notițe (opțional)</label>
+                        <input type="text" id="backpackNotes" placeholder="Ex: capacitate, stare, etc.">
+                    </div>
+                </div>
+                
+                <div class="equipment-item">
+                    <h4>5. Bocanci munte impermeabili</h4>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="radio" id="boots-yes" name="boots" value="AM" required>
+                            <label for="boots-yes">✅ AM</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" id="boots-no" name="boots" value="LIPSĂ">
+                            <label for="boots-no">❌ LIPSĂ</label>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <label for="bootsNotes">Notițe (opțional)</label>
+                        <input type="text" id="bootsNotes" placeholder="Ex: rodați sau noi, mărime, etc.">
+                    </div>
+                </div>
+                
+                <div class="equipment-item">
+                    <h4>6. Geacă impermeabilă</h4>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="radio" id="jacket-yes" name="jacket" value="AM" required>
+                            <label for="jacket-yes">✅ AM</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" id="jacket-no" name="jacket" value="LIPSĂ">
+                            <label for="jacket-no">❌ LIPSĂ</label>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <label for="jacketNotes">Notițe (opțional)</label>
+                        <input type="text" id="jacketNotes" placeholder="Ex: tip, mărime, etc.">
+                    </div>
+                </div>
+                
+                <div class="equipment-item">
+                    <h4>7. Lampă frontală</h4>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="radio" id="headlamp-yes" name="headlamp" value="AM" required>
+                            <label for="headlamp-yes">✅ AM</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" id="headlamp-no" name="headlamp" value="LIPSĂ">
+                            <label for="headlamp-no">❌ LIPSĂ</label>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <label for="headlampNotes">Notițe (opțional)</label>
+                        <input type="text" id="headlampNotes" placeholder="Ex: cu baterii noi, tip, etc.">
+                    </div>
+                </div>
+                
+                <div class="equipment-item">
+                    <h4>8. Aragaz camping</h4>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="radio" id="stove-yes" name="stove" value="AM" required>
+                            <label for="stove-yes">✅ AM</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" id="stove-no" name="stove" value="LIPSĂ">
+                            <label for="stove-no">❌ LIPSĂ</label>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <label for="stoveNotes">Notițe (opțional)</label>
+                        <input type="text" id="stoveNotes" placeholder="Ex: tip combustibil, stare, etc.">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="otherEquipment">9. Alte echipamente (GPS, walkie-talkie, etc.)</label>
+                    <input type="text" id="otherEquipment" placeholder="Ex: GPS, walkie-talkie, powerbank">
+                </div>
+            </div>
+            
+            <!-- TRANSPORT -->
+            <div class="section">
+                <h2 class="section-title">🚗 Transport</h2>
+                
+                <div class="form-group">
+                    <label>Ai mașină și poți conduce? *</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="radio" id="car-yes" name="hasCar" value="DA" required>
+                            <label for="car-yes">DA - Am mașină</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" id="car-no" name="hasCar" value="NU">
+                            <label for="car-no">NU - Trebuie să merg cu altcineva</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="seats">Dacă ai mașină, câte locuri libere ai?</label>
+                    <select id="seats">
+                        <option value="">N/A</option>
+                        <option value="1">1 loc</option>
+                        <option value="2">2 locuri</option>
+                        <option value="3">3 locuri</option>
+                        <option value="4">4 locuri</option>
+                        <option value="5+">5+ locuri</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="departureCity">Oraș de plecare *</label>
+                    <input type="text" id="departureCity" placeholder="Ex: București, Cluj, Timișoara" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="transportNotes">Observații transport (opțional)</label>
+                    <input type="text" id="transportNotes" placeholder="Ex: Pot lua pe cineva, Prefer carpool, etc.">
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn">📤 Generează Răspuns</button>
+        </form>
+        
+        <div class="result" id="result">
+            <h3>✅ Răspunsul tău - Copiază și trimite în WhatsApp!</h3>
+            <div class="result-content" id="resultContent"></div>
+            <button class="copy-btn" id="copyBtn">📋 Copiază în Clipboard</button>
+            <div class="success-msg" id="successMsg">✅ Copiat cu succes!</div>
+        </div>
+        </div>
+    </div>
+    
+    <script>
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            const correctPassword = 'XCC190';
+            
+            if (password === correctPassword) {
+                document.getElementById('passwordScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            } else {
+                document.getElementById('passwordError').style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+            }
+        }
+        
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+        
+        document.getElementById('xccForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const sleepingbag = document.querySelector('input[name="sleepingbag"]:checked').value;
+            const sleepingbagNotes = document.getElementById('sleepingbagNotes').value;
+            const tent = document.querySelector('input[name="tent"]:checked').value;
+            const tentCapacity = document.getElementById('tentCapacity').value;
+            const tentNotes = document.getElementById('tentNotes').value;
+            const mat = document.querySelector('input[name="mat"]:checked').value;
+            const matNotes = document.getElementById('matNotes').value;
+            const backpack = document.querySelector('input[name="backpack"]:checked').value;
+            const backpackNotes = document.getElementById('backpackNotes').value;
+            const boots = document.querySelector('input[name="boots"]:checked').value;
+            const bootsNotes = document.getElementById('bootsNotes').value;
+            const jacket = document.querySelector('input[name="jacket"]:checked').value;
+            const jacketNotes = document.getElementById('jacketNotes').value;
+            const headlamp = document.querySelector('input[name="headlamp"]:checked').value;
+            const headlampNotes = document.getElementById('headlampNotes').value;
+            const stove = document.querySelector('input[name="stove"]:checked').value;
+            const stoveNotes = document.getElementById('stoveNotes').value;
+            const otherEquipment = document.getElementById('otherEquipment').value;
+            const hasCar = document.querySelector('input[name="hasCar"]:checked').value;
+            const seats = document.getElementById('seats').value;
+            const departureCity = document.getElementById('departureCity').value;
+            const transportNotes = document.getElementById('transportNotes').value;
+            
+            let result = `🏔️ XCC-190 - RĂSPUNS FORMULAR\n\n`;
+            result += `👤 NUME: ${name}\n\n`;
+            result += `📦 ECHIPAMENT:\n`;
+            result += `1. Sac dormit: ${sleepingbag}${sleepingbagNotes ? ` (${sleepingbagNotes})` : ''}\n`;
+            result += `2. Cort: ${tent}${tentCapacity ? ` (${tentCapacity} persoane)` : ''}${tentNotes ? ` - ${tentNotes}` : ''}\n`;
+            result += `3. Izopren: ${mat}${matNotes ? ` (${matNotes})` : ''}\n`;
+            result += `4. Rucsac: ${backpack}${backpackNotes ? ` (${backpackNotes})` : ''}\n`;
+            result += `5. Bocanci: ${boots}${bootsNotes ? ` (${bootsNotes})` : ''}\n`;
+            result += `6. Geacă: ${jacket}${jacketNotes ? ` (${jacketNotes})` : ''}\n`;
+            result += `7. Lampă: ${headlamp}${headlampNotes ? ` (${headlampNotes})` : ''}\n`;
+            result += `8. Aragaz: ${stove}${stoveNotes ? ` (${stoveNotes})` : ''}\n`;
+            result += `9. Altele: ${otherEquipment || 'N/A'}\n\n`;
+            result += `🚗 TRANSPORT:\n`;
+            result += `Mașină: ${hasCar}\n`;
+            if (hasCar === 'DA' && seats) {
+                result += `Locuri disponibile: ${seats}\n`;
+            }
+            result += `Oraș plecare: ${departureCity}\n`;
+            if (transportNotes) {
+                result += `Observații: ${transportNotes}\n`;
+            }
+            result += `\n✅ Completat!`;
+            
+            document.getElementById('resultContent').textContent = result;
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            const text = document.getElementById('resultContent').textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                const successMsg = document.getElementById('successMsg');
+                successMsg.style.display = 'block';
+                setTimeout(function() {
+                    successMsg.style.display = 'none';
+                }, 3000);
+            });
+        });
+    </script>
+</body>
+</html>
